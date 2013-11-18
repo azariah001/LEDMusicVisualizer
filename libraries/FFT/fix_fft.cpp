@@ -1,6 +1,10 @@
 #include <avr/pgmspace.h>
 #include "fix_fft.h"
-#include <WProgram.h>
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include <Arduino.h>
+#else
+  #include <WProgram.h>
+#endif
 
 /* fix_fft.c - Fixed-point in-place Fast Fourier Transform  */
 /*
@@ -47,7 +51,7 @@
 
 
 
-const prog_int8_t Sinewave[N_WAVE-N_WAVE/4] PROGMEM = {
+const int8_t Sinewave[N_WAVE-N_WAVE/4] PROGMEM = {
 0, 3, 6, 9, 12, 15, 18, 21, 
 24, 28, 31, 34, 37, 40, 43, 46, 
 48, 51, 54, 57, 60, 63, 65, 68, 
@@ -125,16 +129,16 @@ inline char FIX_MPY(char a, char b)
   RESULT (in-place FFT), with 0 <= n < 2**m; set inverse to
   0 for forward transform (FFT), or 1 for iFFT.
 */
-int fix_fft(char fr[], char fi[], int m, int inverse)
-{
+int fix_fft(char fr[], char fi[], double m, int inverse) {
     int mr, nn, i, j, l, k, istep, n, scale, shift;
     char qr, qi, tr, ti, wr, wi;
 
-    n = 1 << m;
+    n = (int)floor(1 << m);
 
     /* max FFT size = N_WAVE */
-    if (n > N_WAVE)
+    if (n > N_WAVE) {
         return -1;
+    }
 
     mr = 0;
     nn = n - 1;
