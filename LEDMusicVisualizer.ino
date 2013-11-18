@@ -20,18 +20,18 @@
  * THE SOFTWARE.
  */
 
-#include "fix_fft.h"
-#include "HSBColor.h"
-#include "LPD8806.h"
-#include "SPI.h"
+#include <fix_fft.h>
+#include <HSBColor.h>
+#include <LPD8806.h>
+#include <SPI.h>
 
 // Chose 2 pins for output; can be any valid output pins:
 #define DATA_PIN 2
 #define CLOCK_PIN 3
 
 // Defines the number and arrangement of LEDs in the visualizer
-#define NUM_BARS 8
-#define BAR_LENGTH 8
+#define NUM_BARS 12
+#define BAR_LENGTH 1
 
 // The difference in hue for each bar after the first.
 #define BAR_HUE_DIFF 8
@@ -83,7 +83,7 @@ void loop()
   
   // Perform FFT on data
   // HACK 4 represents 2^4, or 16 (NUM_BARS * 2). Change this to adjust with NUM_BARS!
-  int shift = fix_fft(data, im, 4, 0);
+  int shift = fix_fft(data, im, 4.899, 0);
 
   // Clear pixels
   for (i = 0; i < NUM_BARS * BAR_LENGTH; i++)
